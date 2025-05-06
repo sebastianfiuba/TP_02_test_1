@@ -49,9 +49,6 @@ void userInterfaceUpdate(log_t* loginter){
   updateSens(loginter);
 
   return;
-}
-
-
 
 }
 

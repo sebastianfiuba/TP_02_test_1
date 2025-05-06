@@ -8,8 +8,7 @@
 //=====[Declaration of private defines]========================================
 
 #define HIGH_LIMIT_HUM 80
-#define OPEN_VALUE false
-#define CLOSED_VALUE true
+
 //=====[Declaration of private data types]=====================================
 
 //=====[Declaration and initialization of public global objects]===============
@@ -36,11 +35,14 @@ void updateLock(log_t* locklog){
   
   bool statelock = checkLockConditions(locklog);
 
-  bool changeslock = checkChangesLockLog(locklog, stateLock);
+  bool changeslock = checkChangesLockLog(locklog, statelock);
 
-  if(changeslock){
-    changeLock(statelock);
-    updateLogLock(lockloga, statelock); //changes true
+  if(changeslock  &&  (getManualLog(locklog) != CLOSED_VALUE)){
+    if(getBut1Log(locklog))
+      updateManuallog(locklog, !OPEN_VALUE);
+      changeLock(statelock);
+      updateLogLock(locklog, statelock); //changes true
+      updateChangesLog(locklog, true);
   }
   return;
 }
@@ -56,15 +58,21 @@ void changeLock(bool state){
 
 static bool checkLockConditions(log_t* lock){
 
-  if(getBut1Log(lock)) // open
+  if(getBut1Log(lock)){
     return OPEN_VALUE;
-  if(getBut2Log(lock)) // close
+  } // open
+
+  if(getBut2Log(lock)){// close
+    updateManuallog(lock, !CLOSED_VALUE);
     return CLOSED_VALUE;
+  }
   int sens_aux = getSensLog(lock);
   int temp_aux = getTempLog(lock);
-  if(LOW_LIMIT_TEMP >= temp_aux <= sens_aux)
+  if(LOW_LIMIT_TEMP >= temp_aux || temp_aux >= sens_aux)
     return OPEN_VALUE;
   int hum = getHumLog(lock);
   if(hum >= HIGH_LIMIT_HUM)
     return OPEN_VALUE;
+
+  return CLOSED_VALUE;
 }

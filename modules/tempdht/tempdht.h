@@ -1,19 +1,18 @@
 //=====[#include guards - begin]===============================================
+#ifndef _TEMPSENSOR_H_
+#define _TEMPSENSOR_H_
 
-#ifndef _USERINTERFACE_H_
-#define _USERINTERFACE_H_
+#include "eventlog.h"
 
 //=====[Declaration of public defines]=========================================
 
-#include "eventlog.h"
-#include "ledsuser.h"
+
 //=====[Declaration of public data types]======================================
 
 //=====[Declarations (prototypes) of public functions]=========================
 
-void userInterfaceInit();
-void userInterfaceUpdate(log_t* loginter);
+void updateSensorDHT(log_t* sensorlog);
 
 //=====[#include guards - end]=================================================
 
-#endif // _USERINTERFACE_H_
+#endif // _TEMPSENSOR_H_

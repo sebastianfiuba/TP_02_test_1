@@ -1,10 +1,11 @@
 //=====[Libraries]=============================================================
 
-#include "arm_book_lib.h"
 #include "mbed.h"
+#include "arm_book_lib.h"
 
 #include "eventlog.h"
-#include "ledsuser.h" 
+#include "tempdht.h"
+#include "dht.h"
 
 //=====[Declaration of private defines]========================================
 
@@ -12,8 +13,7 @@
 
 //=====[Declaration and initialization of public global objects]===============
 
-DigitalOut openLed(LED2);
-DigitalOut closedLed(LED3);
+DHT sensor(D4, DHT11);
 
 //=====[Declaration of external public global variables]=======================
 
@@ -21,35 +21,24 @@ DigitalOut closedLed(LED3);
 
 //=====[Declaration and initialization of private global variables]============
 
+
 //=====[Declarations (prototypes) of private functions]========================
 
-static void changeLeds(bool statelock);
 
 //=====[Implementations of public functions]===================================
 
-void initUserLeds(){
 
-  changeLeds(INIT_LOCK_VALUE);
-  
-  return;
-  
-}
 
-void updateUserleds(log_t* led){
-  bool state = getLockLog(led);
-  if(getChangesFlagLog(led)){
-    changeLeds(state);
-    updateLedsLog(led, state);
-  }
+
+void updateSensorDHT(log_t* sensorlog){
+    static int error = 0;
+    if( 0 == (error = sensor.readData())){
+        int c = (int) sensor.ReadTemperature(CELCIUS);
+        updateTempLog(sensorlog,c);
+        int h = (int)  sensor.ReadHumidity();
+        updateHumLog(sensorlog, h);
+    }
   return;
 }
-
 
 //=====[Implementations of private functions]==================================
-
-static void changeLeds(bool statelock){
-
-  openLed = !statelock;
-  closedLed = statelock;
-  return;
-}

@@ -9,7 +9,7 @@
 
 //=====[Declaration of private defines]========================================
 
-#define BASE_TEMP  10   //in Celsius
+#define BASE_TEMP  20   //in Celsius
 #define MAX_TEMP   40   //in Celsius
 
 //=====[Declaration of private data types]=====================================
@@ -35,9 +35,9 @@ AnalogIn limitPot(A0);
 
 void updateSens(log_t* sens){
   
-  int limitTemp_ant = getSens(sens);
-  float potReading    = limitPot.read();
-  limitTemp  = (int)(potReading * (MAX_TEMP - BASE_TEMP) + BASE_TEMP);
+  int limitTemp_ant = getSensLog(sens);
+  float potReading  = limitPot.read();
+  int limitTemp  = (int)(potReading * (MAX_TEMP - BASE_TEMP) + BASE_TEMP);
 
   if (limitTemp_ant != limitTemp)
     updateSensLog(sens,limitTemp);
